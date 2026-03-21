@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Program</title>
+<title>AI Income Program</title>
 
 <style>
 body{
@@ -14,7 +14,7 @@ body{
     overflow:hidden;
 }
 
-/* SCREENS */
+/* SCREEN */
 .screen{
     position:absolute;
     width:100%;
@@ -23,14 +23,10 @@ body{
     justify-content:center;
     align-items:center;
     opacity:0;
-    transform:scale(0.95);
-    transition:0.4s ease;
+    transition:0.6s;
 }
 
-.active{
-    opacity:1;
-    transform:scale(1);
-}
+.active{ opacity:1; }
 
 /* CARD */
 .card{
@@ -40,7 +36,18 @@ body{
     width:90%;
     max-width:380px;
     text-align:center;
-    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    box-shadow:0 15px 40px rgba(0,0,0,0.3);
+}
+
+/* BUTTON */
+button{
+    padding:14px 25px;
+    border:none;
+    border-radius:8px;
+    background:#00c6ff;
+    color:black;
+    cursor:pointer;
+    margin-top:20px;
 }
 
 /* INPUT */
@@ -49,33 +56,24 @@ input, textarea{
     padding:12px;
     margin:10px 0;
     border-radius:8px;
-    border:1px solid #ddd;
+    border:1px solid #ccc;
 }
 
-/* BUTTON */
-button{
-    padding:12px 20px;
-    border:none;
-    border-radius:8px;
-    background:#0866ff;
-    color:white;
-    cursor:pointer;
-    margin-top:10px;
+/* HERO TEXT ANIMATION */
+.fade-text{
+    opacity:0;
+    transform:translateY(20px);
+    animation:fadeUp 1.2s forwards;
 }
 
-/* DASHBOARD */
-.dashboard{
-    width:90%;
-    max-width:600px;
-    color:black;
-}
+.fade-text:nth-child(2){ animation-delay:0.5s; }
+.fade-text:nth-child(3){ animation-delay:1s; }
 
-.user{
-    background:#f1f1f1;
-    padding:10px;
-    margin:8px 0;
-    border-radius:8px;
-    text-align:left;
+@keyframes fadeUp{
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 </style>
 </head>
@@ -83,64 +81,51 @@ button{
 <body>
 
 <!-- HERO -->
-<div id="s1" class="screen active">
+<div id="hero" class="screen active">
     <div class="card">
-        <h2>🚀 AI Income Program</h2>
-        <p>Learn simple ways to earn online using AI</p>
-        <button onclick="show('s2')">Participate</button>
-        <button onclick="show('login')">Login</button>
-    </div>
-</div>
+        <h2 class="fade-text">🚀 AI Digital Income Program</h2>
 
-<!-- REGISTER -->
-<div id="s2" class="screen">
-    <div class="card">
-        <h3>Create Account</h3>
-        <input id="name" placeholder="Name">
-        <input id="email" placeholder="Email">
-        <input id="pass" type="password" placeholder="Password">
-        <button onclick="register()">Continue</button>
+        <p class="fade-text">
+            This exclusive program is designed for individuals who want to build a real income using modern AI tools and digital skills. You will learn practical methods to create opportunities online, improve your mindset, and develop skills that can change your future. This is not just theory — it is a guided system to help you grow step by step. Only serious and committed participants are selected, so take your chance now and begin your journey toward financial independence.
+        </p>
+
+        <button onclick="show('login')" class="fade-text">Participate</button>
     </div>
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="screen">
     <div class="card">
-        <h3>Login</h3>
-        <input id="loginEmail" placeholder="Email">
-        <input id="loginPass" type="password" placeholder="Password">
-        <button onclick="loginUser()">Login</button>
+        <h3>Login / Register</h3>
+
+        <input id="email" placeholder="Email">
+        <input id="pass" type="password" placeholder="Password">
+
+        <button onclick="login()">Continue</button>
     </div>
 </div>
 
 <!-- QUESTIONS -->
-<div id="s3" class="screen">
+<div id="q" class="screen">
     <div class="card">
         <h3>Tell us about you</h3>
+
         <textarea placeholder="What do you want to achieve?"></textarea>
-        <textarea placeholder="What are you doing now?"></textarea>
-        <textarea placeholder="Any experience online?"></textarea>
-        <textarea placeholder="How much time can you give?"></textarea>
-        <textarea placeholder="Your biggest problem?"></textarea>
+        <textarea placeholder="What are you doing right now?"></textarea>
+        <textarea placeholder="Do you have any online skills?"></textarea>
+        <textarea placeholder="How much time can you give daily?"></textarea>
+        <textarea placeholder="What is your biggest problem?"></textarea>
         <textarea placeholder="Why should we choose you?"></textarea>
+
         <button onclick="submitApp()">Submit</button>
     </div>
 </div>
 
 <!-- RESULT -->
-<div id="s4" class="screen">
+<div id="resultPage" class="screen">
     <div class="card">
         <h2 id="result"></h2>
-        <button onclick="show('s1')">Back Home</button>
-    </div>
-</div>
-
-<!-- ADMIN DASHBOARD -->
-<div id="admin" class="screen">
-    <div class="card dashboard">
-        <h2>📊 Admin Dashboard</h2>
-        <div id="users"></div>
-        <button onclick="show('s1')">Logout</button>
+        <button onclick="show('hero')">Back Home</button>
     </div>
 </div>
 
@@ -152,36 +137,21 @@ function show(id){
     document.getElementById(id).classList.add('active');
 }
 
-/* REGISTER */
-function register(){
-    let user = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        pass: document.getElementById("pass").value
-    };
+/* LOGIN SYSTEM */
+function login(){
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
 
-    localStorage.setItem(user.email, JSON.stringify(user));
-    show('s3');
-}
-
-/* LOGIN */
-function loginUser(){
-    let email = document.getElementById("loginEmail").value;
-    let pass = document.getElementById("loginPass").value;
-
-    // ADMIN LOGIN
     if(email === "admin" && pass === "admin123"){
-        loadUsers();
-        show('admin');
+        alert("Admin login (dashboard can be added)");
         return;
     }
 
-    let user = JSON.parse(localStorage.getItem(email));
-
-    if(user && user.pass === pass){
-        show('s3');
+    if(email && pass){
+        localStorage.setItem("user", email);
+        show('q');
     } else {
-        alert("Wrong login");
+        alert("Enter details");
     }
 }
 
@@ -196,33 +166,20 @@ function submitApp(){
         else score+=5;
     });
 
-    let resultText = score > 90 ? "🔥 Selected!" :
-                     score > 60 ? "⚡ Under Review" :
-                     "❌ Not Selected";
+    let text = score > 90 ? "🔥 You are selected!" :
+               score > 60 ? "⚡ Under review" :
+               "❌ Not selected";
 
-    document.getElementById("result").innerText = resultText;
+    document.getElementById("result").innerText = text;
 
-    // SAVE USER DATA
-    let all = JSON.parse(localStorage.getItem("applications") || "[]");
-    all.push({score:score});
-    localStorage.setItem("applications", JSON.stringify(all));
-
-    show('s4');
-}
-
-/* ADMIN VIEW */
-function loadUsers(){
-    let list = document.getElementById("users");
-    list.innerHTML = "";
-
-    let data = JSON.parse(localStorage.getItem("applications") || "[]");
-
-    data.forEach((u,i)=>{
-        list.innerHTML += `<div class="user">User ${i+1} - Score: ${u.score}</div>`;
-    });
+    show('resultPage');
 }
 
 </script>
 
 </body>
 </html>
+
+
+
+
