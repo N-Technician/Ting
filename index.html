@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exclusive Offer | Participate Now</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+}
+
+.section {
+    display: none;
+    padding: 40px;
+    text-align: center;
+}
+
+.active {
+    display: block;
+}
+
+.hero {
+    background: linear-gradient(135deg, #0866ff, #00c6ff);
+    color: white;
+    padding: 80px 20px;
+}
+
+button {
+    padding: 15px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    background: #0866ff;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+input, textarea {
+    width: 90%;
+    max-width: 400px;
+    padding: 12px;
+    margin: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    margin: auto;
+}
+</style>
+</head>
+
+<body>
+
+<!-- OFFER PAGE -->
+<div id="offer" class="section active hero">
+    <h1>🎁 Exclusive Opportunity!</h1>
+    <p>Join now and unlock premium digital resources, tools & future earning opportunities.</p>
+    <button onclick="nextSection('login')">Participate Now</button>
+</div>
+
+<!-- SIGN UP PAGE -->
+<div id="login" class="section">
+    <div class="card">
+        <h2>Register to Participate</h2>
+
+        <!-- SAFE FORM (No password) -->
+        <form action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
+            
+            <input type="text" name="Name" placeholder="Your Name" required><br>
+            <input type="email" name="Email" placeholder="Your Email" required><br>
+            <input type="text" name="Phone" placeholder="Phone Number" required><br>
+
+            <!-- redirect after submit -->
+            <input type="hidden" name="_next" value="">
+            <input type="hidden" name="_captcha" value="false">
+
+            <button type="submit" onclick="nextSection('success')">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- SUCCESS PAGE -->
+<div id="success" class="section">
+    <div class="card">
+        <h2>✅ Participation Successful!</h2>
+        <p>Now please answer a few questions:</p>
+
+        <form action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
+            
+            <textarea name="Goal" placeholder="What is your main goal?" required></textarea><br>
+            <textarea name="Experience" placeholder="Your experience level?" required></textarea><br>
+            <textarea name="Expectation" placeholder="What do you expect from this?" required></textarea><br>
+
+            <input type="hidden" name="_captcha" value="false">
+
+            <button type="submit">Submit Answers</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function nextSection(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
+</html>
