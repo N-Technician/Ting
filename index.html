@@ -3,21 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Income Program</title>
+<title>AI Program</title>
 
 <style>
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:#0f2027;
-    overflow:hidden;
-}
-
-/* APP CONTAINER */
-.app{
-    width:100vw;
+    background:linear-gradient(135deg,#0f2027,#2c5364);
     height:100vh;
-    position:relative;
+    overflow:hidden;
 }
 
 /* SCREENS */
@@ -28,36 +22,25 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    flex-direction:column;
-    color:white;
-    transition:0.5s;
-    left:100%;
+    opacity:0;
+    transform:scale(0.95);
+    transition:0.4s ease;
 }
 
 .active{
-    left:0;
+    opacity:1;
+    transform:scale(1);
 }
 
 /* CARD */
 .card{
     background:white;
-    color:black;
     padding:30px;
-    border-radius:15px;
+    border-radius:16px;
     width:90%;
-    max-width:400px;
+    max-width:380px;
     text-align:center;
-}
-
-/* BUTTON */
-button{
-    padding:14px 25px;
-    border:none;
-    border-radius:8px;
-    background:#00c6ff;
-    font-size:16px;
-    cursor:pointer;
-    margin-top:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.2);
 }
 
 /* INPUT */
@@ -66,144 +49,180 @@ input, textarea{
     padding:12px;
     margin:10px 0;
     border-radius:8px;
-    border:1px solid #ccc;
+    border:1px solid #ddd;
 }
 
-/* TIMER */
-.timer{
-    font-size:20px;
+/* BUTTON */
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    background:#0866ff;
+    color:white;
+    cursor:pointer;
     margin-top:10px;
-    color:#00ffcc;
+}
+
+/* DASHBOARD */
+.dashboard{
+    width:90%;
+    max-width:600px;
+    color:black;
+}
+
+.user{
+    background:#f1f1f1;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    text-align:left;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
-
 <!-- HERO -->
-<div class="screen active" id="screen1">
-    <h1>🚀 AI Income Program</h1>
-    <p>Learn simple ways to earn online using AI.</p>
-
-    <div class="timer" id="timer"></div>
-
-    <button onclick="next(2)">Participate</button>
-</div>
-
-<!-- REGISTER -->
-<div class="screen" id="screen2">
+<div id="s1" class="screen active">
     <div class="card">
-        <h2>Join Now</h2>
-
-        <input type="text" placeholder="Your Name">
-        <input type="email" placeholder="Your Email">
-        <input type="text" placeholder="Phone Number">
-
-        <button onclick="next(3)">Continue</button>
+        <h2>🚀 AI Income Program</h2>
+        <p>Learn simple ways to earn online using AI</p>
+        <button onclick="show('s2')">Participate</button>
+        <button onclick="show('login')">Login</button>
     </div>
 </div>
 
-<!-- SUCCESS -->
-<div class="screen" id="screen3">
+<!-- REGISTER -->
+<div id="s2" class="screen">
     <div class="card">
-        <h2>✅ You're In</h2>
-        <p>Just answer few questions</p>
-        <button onclick="next(4)">Start</button>
+        <h3>Create Account</h3>
+        <input id="name" placeholder="Name">
+        <input id="email" placeholder="Email">
+        <input id="pass" type="password" placeholder="Password">
+        <button onclick="register()">Continue</button>
+    </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="screen">
+    <div class="card">
+        <h3>Login</h3>
+        <input id="loginEmail" placeholder="Email">
+        <input id="loginPass" type="password" placeholder="Password">
+        <button onclick="loginUser()">Login</button>
     </div>
 </div>
 
 <!-- QUESTIONS -->
-<div class="screen" id="screen4">
+<div id="s3" class="screen">
     <div class="card">
-        <h3>Tell us about you 😊</h3>
-
+        <h3>Tell us about you</h3>
         <textarea placeholder="What do you want to achieve?"></textarea>
         <textarea placeholder="What are you doing now?"></textarea>
-        <textarea placeholder="Do you know anything about online earning?"></textarea>
-        <textarea placeholder="How much time can you give daily?"></textarea>
-        <textarea placeholder="What problem are you facing right now?"></textarea>
+        <textarea placeholder="Any experience online?"></textarea>
+        <textarea placeholder="How much time can you give?"></textarea>
+        <textarea placeholder="Your biggest problem?"></textarea>
         <textarea placeholder="Why should we choose you?"></textarea>
-
         <button onclick="submitApp()">Submit</button>
     </div>
 </div>
 
 <!-- RESULT -->
-<div class="screen" id="screen5">
+<div id="s4" class="screen">
     <div class="card">
-        <h2 id="resultText"></h2>
-        <button onclick="next(6)">Continue</button>
+        <h2 id="result"></h2>
+        <button onclick="show('s1')">Back Home</button>
     </div>
 </div>
 
-<!-- PAYMENT -->
-<div class="screen" id="screen6">
-    <div class="card">
-        <h2>💰 Unlock Full Access</h2>
-        <p>Pay NPR 999 to continue</p>
-
-        <button onclick="alert('Redirect to payment')">
-            Pay Now
-        </button>
+<!-- ADMIN DASHBOARD -->
+<div id="admin" class="screen">
+    <div class="card dashboard">
+        <h2>📊 Admin Dashboard</h2>
+        <div id="users"></div>
+        <button onclick="show('s1')">Logout</button>
     </div>
-</div>
-
 </div>
 
 <script>
 
-/* NAVIGATION */
-function next(n){
-    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-    document.getElementById("screen"+n).classList.add("active");
+/* SCREEN SWITCH */
+function show(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
-/* TIMER */
-let end = new Date().getTime() + (24*60*60*1000);
+/* REGISTER */
+function register(){
+    let user = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        pass: document.getElementById("pass").value
+    };
 
-setInterval(()=>{
-    let now = new Date().getTime();
-    let diff = end - now;
+    localStorage.setItem(user.email, JSON.stringify(user));
+    show('s3');
+}
 
-    let h = Math.floor(diff/(1000*60*60));
-    let m = Math.floor((diff%(1000*60*60))/(1000*60));
-    let s = Math.floor((diff%(1000*60))/1000);
+/* LOGIN */
+function loginUser(){
+    let email = document.getElementById("loginEmail").value;
+    let pass = document.getElementById("loginPass").value;
 
-    document.getElementById("timer").innerHTML =
-    "⏳ Ends in: "+h+"h "+m+"m "+s+"s";
-},1000);
+    // ADMIN LOGIN
+    if(email === "admin" && pass === "admin123"){
+        loadUsers();
+        show('admin');
+        return;
+    }
+
+    let user = JSON.parse(localStorage.getItem(email));
+
+    if(user && user.pass === pass){
+        show('s3');
+    } else {
+        alert("Wrong login");
+    }
+}
 
 /* AI SCORING */
 function submitApp(){
-    let textareas = document.querySelectorAll("textarea");
+    let answers = document.querySelectorAll("textarea");
     let score = 0;
 
-    textareas.forEach(t=>{
-        if(t.value.length > 80) score += 20;
-        else if(t.value.length > 40) score += 10;
-        else score += 5;
+    answers.forEach(a=>{
+        if(a.value.length > 80) score+=20;
+        else if(a.value.length > 40) score+=10;
+        else score+=5;
     });
 
-    let result = document.getElementById("resultText");
+    let resultText = score > 90 ? "🔥 Selected!" :
+                     score > 60 ? "⚡ Under Review" :
+                     "❌ Not Selected";
 
-    if(score > 90){
-        result.innerHTML = "🔥 You are selected!";
-    } else if(score > 60){
-        result.innerHTML = "⚡ We will review your application.";
-    } else {
-        result.innerHTML = "❌ Not selected";
-    }
+    document.getElementById("result").innerText = resultText;
 
-    next(5);
+    // SAVE USER DATA
+    let all = JSON.parse(localStorage.getItem("applications") || "[]");
+    all.push({score:score});
+    localStorage.setItem("applications", JSON.stringify(all));
+
+    show('s4');
+}
+
+/* ADMIN VIEW */
+function loadUsers(){
+    let list = document.getElementById("users");
+    list.innerHTML = "";
+
+    let data = JSON.parse(localStorage.getItem("applications") || "[]");
+
+    data.forEach((u,i)=>{
+        list.innerHTML += `<div class="user">User ${i+1} - Score: ${u.score}</div>`;
+    });
 }
 
 </script>
 
 </body>
 </html>
-
-
-
-
