@@ -9,193 +9,194 @@
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:#f5f7fa;
+    background:#0f2027;
+    overflow:hidden;
 }
 
-/* HERO */
-.hero{
-    background:linear-gradient(135deg,#0f2027,#2c5364);
+/* APP CONTAINER */
+.app{
+    width:100vw;
+    height:100vh;
+    position:relative;
+}
+
+/* SCREENS */
+.screen{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
     color:white;
-    padding:90px 20px;
-    text-align:center;
+    transition:0.5s;
+    left:100%;
 }
 
-.hero h1{ font-size:40px; }
-.hero p{ max-width:600px; margin:auto; opacity:0.9; }
-
-.timer{
-    font-size:22px;
-    margin-top:20px;
-    color:#00ffcc;
-    font-weight:bold;
+.active{
+    left:0;
 }
-
-button{
-    margin-top:25px;
-    padding:15px 25px;
-    border:none;
-    border-radius:10px;
-    background:#00c6ff;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-/* SECTION */
-.section{ display:none; padding:40px; text-align:center; }
-.active{ display:block; }
 
 /* CARD */
 .card{
     background:white;
+    color:black;
     padding:30px;
     border-radius:15px;
-    max-width:500px;
-    margin:auto;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
-
-/* FORM */
-input, textarea, select{
     width:90%;
     max-width:400px;
+    text-align:center;
+}
+
+/* BUTTON */
+button{
+    padding:14px 25px;
+    border:none;
+    border-radius:8px;
+    background:#00c6ff;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+/* INPUT */
+input, textarea{
+    width:90%;
     padding:12px;
-    margin:10px;
+    margin:10px 0;
     border-radius:8px;
     border:1px solid #ccc;
 }
 
-/* TESTIMONIAL */
-.testimonials{
-    margin-top:40px;
-}
-.testimonials p{
-    background:rgba(255,255,255,0.1);
-    padding:10px;
-    border-radius:8px;
-    margin:10px auto;
-    max-width:500px;
+/* TIMER */
+.timer{
+    font-size:20px;
+    margin-top:10px;
+    color:#00ffcc;
 }
 </style>
 </head>
 
 <body>
 
+<div class="app">
+
 <!-- HERO -->
-<div id="hero" class="hero active">
-    <h1>🚀 AI Digital Income Accelerator</h1>
-    <p>Learn how to earn online using AI tools and digital skills.</p>
+<div class="screen active" id="screen1">
+    <h1>🚀 AI Income Program</h1>
+    <p>Learn simple ways to earn online using AI.</p>
 
-    <!-- COUNTDOWN -->
-    <div class="timer" id="countdown">Loading...</div>
+    <div class="timer" id="timer"></div>
 
-    <!-- TESTIMONIALS -->
-    <div class="testimonials">
-        <p>💬 “I made my first $100 online in 2 weeks!”</p>
-        <p>💬 “This program changed my mindset and income.”</p>
-        <p>💬 “Best decision I ever made for my future.”</p>
-    </div>
-
-    <button onclick="nextSection('register')">Participate Now</button>
+    <button onclick="next(2)">Participate</button>
 </div>
 
 <!-- REGISTER -->
-<div id="register" class="section">
+<div class="screen" id="screen2">
     <div class="card">
-        <h2>Secure Your Spot</h2>
+        <h2>Join Now</h2>
 
-        <form action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
-            <input type="text" name="Name" placeholder="Full Name" required>
-            <input type="email" name="Email" placeholder="Email Address" required>
-            <input type="text" name="Phone" placeholder="Phone Number" required>
+        <input type="text" placeholder="Your Name">
+        <input type="email" placeholder="Your Email">
+        <input type="text" placeholder="Phone Number">
 
-            <input type="hidden" name="_captcha" value="false">
-
-            <button type="submit" onclick="nextSection('success')">Continue</button>
-        </form>
+        <button onclick="next(3)">Continue</button>
     </div>
 </div>
 
 <!-- SUCCESS -->
-<div id="success" class="section">
+<div class="screen" id="screen3">
     <div class="card">
-        <h2>✅ You're In!</h2>
-        <p>Complete final step to qualify.</p>
-        <button onclick="nextSection('questions')">Continue</button>
+        <h2>✅ You're In</h2>
+        <p>Just answer few questions</p>
+        <button onclick="next(4)">Start</button>
     </div>
 </div>
 
 <!-- QUESTIONS -->
-<div id="questions" class="section">
+<div class="screen" id="screen4">
     <div class="card">
-        <h2>Final Application</h2>
+        <h3>Tell us about you 😊</h3>
 
-        <form id="appForm" action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
+        <textarea placeholder="What do you want to achieve?"></textarea>
+        <textarea placeholder="What are you doing now?"></textarea>
+        <textarea placeholder="Do you know anything about online earning?"></textarea>
+        <textarea placeholder="How much time can you give daily?"></textarea>
+        <textarea placeholder="What problem are you facing right now?"></textarea>
+        <textarea placeholder="Why should we choose you?"></textarea>
 
-            <textarea name="Goal" placeholder="1. Your main goal?" required></textarea>
-            <textarea name="Current" placeholder="2. What are you currently doing?" required></textarea>
-            <textarea name="Experience" placeholder="3. Any experience?" required></textarea>
-            <textarea name="Time" placeholder="4. Daily time commitment?" required></textarea>
-            <textarea name="Challenge" placeholder="5. Biggest challenge?" required></textarea>
-            <textarea name="Why" placeholder="6. Why should we select you?" required></textarea>
-
-            <input type="hidden" name="_captcha" value="false">
-
-            <button type="button" onclick="calculateScore()">Submit Application</button>
-        </form>
-
-        <h3 id="result"></h3>
+        <button onclick="submitApp()">Submit</button>
     </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="screen5">
+    <div class="card">
+        <h2 id="resultText"></h2>
+        <button onclick="next(6)">Continue</button>
+    </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="screen" id="screen6">
+    <div class="card">
+        <h2>💰 Unlock Full Access</h2>
+        <p>Pay NPR 999 to continue</p>
+
+        <button onclick="alert('Redirect to payment')">
+            Pay Now
+        </button>
+    </div>
+</div>
+
 </div>
 
 <script>
 
 /* NAVIGATION */
-function nextSection(id){
-    document.querySelectorAll('.hero, .section').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+function next(n){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById("screen"+n).classList.add("active");
 }
 
-/* COUNTDOWN TIMER (24 hours) */
-let endTime = new Date().getTime() + (24*60*60*1000);
+/* TIMER */
+let end = new Date().getTime() + (24*60*60*1000);
 
 setInterval(()=>{
     let now = new Date().getTime();
-    let diff = endTime - now;
+    let diff = end - now;
 
     let h = Math.floor(diff/(1000*60*60));
     let m = Math.floor((diff%(1000*60*60))/(1000*60));
     let s = Math.floor((diff%(1000*60))/1000);
 
-    document.getElementById("countdown").innerHTML =
-        "⏳ Offer ends in: " + h + "h " + m + "m " + s + "s";
-
+    document.getElementById("timer").innerHTML =
+    "⏳ Ends in: "+h+"h "+m+"m "+s+"s";
 },1000);
 
-/* AI SCORING SYSTEM */
-function calculateScore(){
-    let inputs = document.querySelectorAll("#appForm textarea");
+/* AI SCORING */
+function submitApp(){
+    let textareas = document.querySelectorAll("textarea");
     let score = 0;
 
-    inputs.forEach(input=>{
-        let length = input.value.length;
-
-        if(length > 100) score += 20;
-        else if(length > 50) score += 10;
+    textareas.forEach(t=>{
+        if(t.value.length > 80) score += 20;
+        else if(t.value.length > 40) score += 10;
         else score += 5;
     });
 
-    let result = document.getElementById("result");
+    let result = document.getElementById("resultText");
 
     if(score > 90){
-        result.innerHTML = "🔥 Selected! High Potential Candidate.";
+        result.innerHTML = "🔥 You are selected!";
     } else if(score > 60){
-        result.innerHTML = "⚡ Under Review. Good Application.";
+        result.innerHTML = "⚡ We will review your application.";
     } else {
-        result.innerHTML = "❌ Not Selected. Improve answers.";
+        result.innerHTML = "❌ Not selected";
     }
 
-    // submit form after scoring
-    document.getElementById("appForm").submit();
+    next(5);
 }
 
 </script>
@@ -206,5 +207,3 @@ function calculateScore(){
 
 
 
-
-    
