@@ -3,116 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exclusive Offer | Participate Now</title>
+<title>AI Income Program</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#f5f7fa;
 }
 
-.section {
-    display: none;
-    padding: 40px;
-    text-align: center;
+/* HERO */
+.hero{
+    background:linear-gradient(135deg,#0f2027,#2c5364);
+    color:white;
+    padding:90px 20px;
+    text-align:center;
 }
 
-.active {
-    display: block;
+.hero h1{ font-size:40px; }
+.hero p{ max-width:600px; margin:auto; opacity:0.9; }
+
+.timer{
+    font-size:22px;
+    margin-top:20px;
+    color:#00ffcc;
+    font-weight:bold;
 }
 
-.hero {
-    background: linear-gradient(135deg, #0866ff, #00c6ff);
-    color: white;
-    padding: 80px 20px;
+button{
+    margin-top:25px;
+    padding:15px 25px;
+    border:none;
+    border-radius:10px;
+    background:#00c6ff;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-button {
-    padding: 15px 25px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    background: #0866ff;
-    color: white;
-    cursor: pointer;
-    margin-top: 20px;
+/* SECTION */
+.section{ display:none; padding:40px; text-align:center; }
+.active{ display:block; }
+
+/* CARD */
+.card{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    max-width:500px;
+    margin:auto;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
-input, textarea {
-    width: 90%;
-    max-width: 400px;
-    padding: 12px;
-    margin: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+/* FORM */
+input, textarea, select{
+    width:90%;
+    max-width:400px;
+    padding:12px;
+    margin:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
 }
 
-.card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    max-width: 500px;
-    margin: auto;
+/* TESTIMONIAL */
+.testimonials{
+    margin-top:40px;
+}
+.testimonials p{
+    background:rgba(255,255,255,0.1);
+    padding:10px;
+    border-radius:8px;
+    margin:10px auto;
+    max-width:500px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- OFFER PAGE -->
-<div id="offer" class="section active hero">
-    <h1>🎁 Exclusive Opportunity!</h1>
-    <p>Join now and unlock premium digital resources, tools & future earning opportunities.</p>
-    <button onclick="nextSection('login')">Participate Now</button>
+<!-- HERO -->
+<div id="hero" class="hero active">
+    <h1>🚀 AI Digital Income Accelerator</h1>
+    <p>Learn how to earn online using AI tools and digital skills.</p>
+
+    <!-- COUNTDOWN -->
+    <div class="timer" id="countdown">Loading...</div>
+
+    <!-- TESTIMONIALS -->
+    <div class="testimonials">
+        <p>💬 “I made my first $100 online in 2 weeks!”</p>
+        <p>💬 “This program changed my mindset and income.”</p>
+        <p>💬 “Best decision I ever made for my future.”</p>
+    </div>
+
+    <button onclick="nextSection('register')">Participate Now</button>
 </div>
 
-<!-- SIGN UP PAGE -->
-<div id="login" class="section">
+<!-- REGISTER -->
+<div id="register" class="section">
     <div class="card">
-        <h2>Register to Participate</h2>
+        <h2>Secure Your Spot</h2>
 
-        <!-- SAFE FORM (No password) -->
         <form action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
-            
-            <input type="text" name="Name" placeholder="Your Name" required><br>
-            <input type="email" name="Email" placeholder="Your Email" required><br>
-            <input type="text" name="Phone" placeholder="Phone Number" required><br>
+            <input type="text" name="Name" placeholder="Full Name" required>
+            <input type="email" name="Email" placeholder="Email Address" required>
+            <input type="text" name="Phone" placeholder="Phone Number" required>
 
-            <!-- redirect after submit -->
-            <input type="hidden" name="_next" value="">
             <input type="hidden" name="_captcha" value="false">
 
-            <button type="submit" onclick="nextSection('success')">Submit</button>
+            <button type="submit" onclick="nextSection('success')">Continue</button>
         </form>
     </div>
 </div>
 
-<!-- SUCCESS PAGE -->
+<!-- SUCCESS -->
 <div id="success" class="section">
     <div class="card">
-        <h2>✅ Participation Successful!</h2>
-        <p>Now please answer a few questions:</p>
+        <h2>✅ You're In!</h2>
+        <p>Complete final step to qualify.</p>
+        <button onclick="nextSection('questions')">Continue</button>
+    </div>
+</div>
 
-        <form action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
-            
-            <textarea name="Goal" placeholder="What is your main goal?" required></textarea><br>
-            <textarea name="Experience" placeholder="Your experience level?" required></textarea><br>
-            <textarea name="Expectation" placeholder="What do you expect from this?" required></textarea><br>
+<!-- QUESTIONS -->
+<div id="questions" class="section">
+    <div class="card">
+        <h2>Final Application</h2>
+
+        <form id="appForm" action="https://formsubmit.co/yoshpick22@gmail.com" method="POST">
+
+            <textarea name="Goal" placeholder="1. Your main goal?" required></textarea>
+            <textarea name="Current" placeholder="2. What are you currently doing?" required></textarea>
+            <textarea name="Experience" placeholder="3. Any experience?" required></textarea>
+            <textarea name="Time" placeholder="4. Daily time commitment?" required></textarea>
+            <textarea name="Challenge" placeholder="5. Biggest challenge?" required></textarea>
+            <textarea name="Why" placeholder="6. Why should we select you?" required></textarea>
 
             <input type="hidden" name="_captcha" value="false">
 
-            <button type="submit">Submit Answers</button>
+            <button type="button" onclick="calculateScore()">Submit Application</button>
         </form>
+
+        <h3 id="result"></h3>
     </div>
 </div>
 
 <script>
-function nextSection(id) {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+
+/* NAVIGATION */
+function nextSection(id){
+    document.querySelectorAll('.hero, .section').forEach(el => el.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
+
+/* COUNTDOWN TIMER (24 hours) */
+let endTime = new Date().getTime() + (24*60*60*1000);
+
+setInterval(()=>{
+    let now = new Date().getTime();
+    let diff = endTime - now;
+
+    let h = Math.floor(diff/(1000*60*60));
+    let m = Math.floor((diff%(1000*60*60))/(1000*60));
+    let s = Math.floor((diff%(1000*60))/1000);
+
+    document.getElementById("countdown").innerHTML =
+        "⏳ Offer ends in: " + h + "h " + m + "m " + s + "s";
+
+},1000);
+
+/* AI SCORING SYSTEM */
+function calculateScore(){
+    let inputs = document.querySelectorAll("#appForm textarea");
+    let score = 0;
+
+    inputs.forEach(input=>{
+        let length = input.value.length;
+
+        if(length > 100) score += 20;
+        else if(length > 50) score += 10;
+        else score += 5;
+    });
+
+    let result = document.getElementById("result");
+
+    if(score > 90){
+        result.innerHTML = "🔥 Selected! High Potential Candidate.";
+    } else if(score > 60){
+        result.innerHTML = "⚡ Under Review. Good Application.";
+    } else {
+        result.innerHTML = "❌ Not Selected. Improve answers.";
+    }
+
+    // submit form after scoring
+    document.getElementById("appForm").submit();
+}
+
 </script>
 
 </body>
 </html>
+
+
+
+
+
+    
