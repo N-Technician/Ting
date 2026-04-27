@@ -638,7 +638,25 @@ function loop(timestamp){
   animId=requestAnimationFrame(loop);
 }
 animId=requestAnimationFrame(loop);
-}
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+const playBtn=document.getElementById('playBtn');
+playBtn.addEventListener('click',()=>{
+  paused=!paused;
+  playBtn.textContent=paused?'∆':'.';
+  if(!paused){
+    startTime=null;
+    pausedAt=elapsed;
+    animId=requestAnimationFrame(loop);
+  }
+});
+
+function replayVideo(){
+  document.getElementById('replay-overlay').classList.remove('show');
+  elapsed=0;pausedAt=0;startTime=null;paused=false;
+  playBtn.textContent='.';
+  animId=requestAnimationFrame(loop);
+  
+  }
 </script>
 </body>
 </html> 
