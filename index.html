@@ -3,194 +3,651 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Income Program</title>
-
+<title>The Workshop Eatery — Cinematic Intro</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    height:100vh;
-    overflow:hidden;
-    background:url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5') no-repeat center/cover;
-}
-
-/* OVERLAY */
-.overlay{
-    position:absolute;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.6);
-}
-
-/* SCREEN */
-.screen{
-    position:absolute;
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    opacity:0;
-    pointer-events:none; /* 🔥 FIX */
-    transition:0.6s;
-}
-
-.active{
-    opacity:1;
-    pointer-events:auto; /* 🔥 ONLY ACTIVE CLICKABLE */
-}
-
-/* GLASS CARD */
-.card{
-    background:rgba(255,255,255,0.1);
-    backdrop-filter:blur(15px);
-    padding:30px;
-    border-radius:16px;
-    width:90%;
-    max-width:400px;
-    text-align:center;
-    color:white;
-    box-shadow:0 10px 40px rgba(0,0,0,0.4);
-}
-
-/* BUTTON */
-button{
-    padding:14px 25px;
-    border:none;
-    border-radius:8px;
-    background:linear-gradient(135deg,#00c6ff,#0072ff);
-    color:white;
-    cursor:pointer;
-    margin-top:20px;
-    font-size:16px;
-}
-
-/* INPUT */
-input, textarea{
-    width:90%;
-    padding:12px;
-    margin:10px 0;
-    border-radius:8px;
-    border:none;
-    outline:none;
-}
-
-/* ANIMATION */
-.fade{
-    opacity:0;
-    transform:translateY(20px);
-    animation:fadeUp 1s forwards;
-}
-.fade:nth-child(2){ animation-delay:0.4s; }
-.fade:nth-child(3){ animation-delay:0.8s; }
-
-@keyframes fadeUp{
-    to{ opacity:1; transform:translateY(0); }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;overflow:hidden}
+#stage{position:relative;width:100%;max-width:960px}
+canvas{width:100%;height:auto;display:block;border-radius:4px}
+#ui{position:absolute;bottom:0;left:0;right:0;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.progress-wrap{flex:1;margin:0 1.2rem;height:3px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#ff6a00,#ffcc44);transition:width .1s linear}
+.time-lbl{font-size:.7rem;letter-spacing:.3em;color:rgba(255,255,255,.6);font-family:monospace;min-width:60px;text-align:right}
+.play-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:.5rem 1.4rem;font-size:.65rem;letter-spacing:.35em;cursor:pointer;border-radius:3px;font-family:monospace;backdrop-filter:blur(8px);transition:all .2s;flex-shrink:0}
+.play-btn:hover{background:rgba(255,106,0,.3);border-color:rgba(255,106,0,.5)}
+#replay-overlay{position:absolute;inset:0;background:rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s}
+#replay-overlay.show{opacity:1;pointer-events:all}
+.replay-logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:.3em;color:white;margin-bottom:.5rem}
+.replay-sub{font-size:.6rem;letter-spacing:.6em;color:#ff6a00;margin-bottom:2.5rem}
+.replay-btn{padding:.8rem 2.5rem;background:linear-gradient(135deg,#ff6a00,#ee0979);color:white;border:none;font-size:.65rem;letter-spacing:.45em;cursor:pointer;border-radius:3px;font-family:monospace;transition:transform .2s}
+.replay-btn:hover{transform:scale(1.05)}
+#fps-counter{position:absolute;top:.7rem;right:.7rem;font-size:.5rem;letter-spacing:.2em;color:rgba(255,106,0,.4);font-family:monospace}
 </style>
 </head>
-
 <body>
-
-<div class="overlay"></div>
-
-<!-- HERO -->
-<div id="hero" class="screen active">
-    <div class="card">
-        <h2 class="fade">🚀 AI Digital Income Program</h2>
-
-        <p class="fade">
-            Step into the future of earning with powerful AI tools and modern digital skills.
-            This program helps you build real online income, develop valuable skills, and grow your mindset.
-            Learn practical strategies step by step and unlock new opportunities.
-            Only serious participants are selected, so take your chance now.
-        </p>
-
-        <button class="fade" onclick="show('login')">Participate</button>
-    </div>
-</div>
-
-<!-- LOGIN -->
-<div id="login" class="screen">
-    <div class="card">
-        <h3>Login / Register</h3>
-
-        <input id="email" placeholder="Email">
-        <input id="pass" type="password" placeholder="Password">
-
-        <button onclick="login()">Continue</button>
-    </div>
-</div>
-
-<!-- QUESTIONS -->
-<div id="questions" class="screen">
-    <div class="card">
-        <h3>Tell us about you</h3>
-
-        <textarea placeholder="What do you want to achieve?"></textarea>
-        <textarea placeholder="What are you doing right now?"></textarea>
-        <textarea placeholder="Do you have any online skills?"></textarea>
-        <textarea placeholder="How much time can you give daily?"></textarea>
-        <textarea placeholder="What is your biggest problem?"></textarea>
-        <textarea placeholder="Why should we choose you?"></textarea>
-
-        <button onclick="submitApp()">Submit</button>
-    </div>
-</div>
-
-<!-- RESULT -->
-<div id="resultPage" class="screen">
-    <div class="card">
-        <h2 id="result"></h2>
-        <button onclick="show('hero')">Back Home</button>
-    </div>
+<div id="stage">
+  <canvas id="c" width="960" height="540"></canvas>
+  <div id="fps-counter" id="fps">60 FPS</div>
+  <div id="ui">
+    <button class="play-btn" id="playBtn">⏸ PAUSE</button>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="time-lbl" id="timeLbl">0:00 / 0:20</div>
+  </div>
+  <div id="replay-overlay">
+    <div class="replay-logo">THE WORKSHOP</div>
+    <div class="replay-sub">EATERY · CRAFTED · GRILLED · PERFECTED</div>
+    <button class="replay-btn" onclick="replayVideo()">↺ REPLAY</button>
+  </div>
 </div>
 
 <script>
+const W=960,H=540;
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+const TOTAL=20; // seconds
+let startTime=null,pausedAt=0,paused=false,elapsed=0;
+let lastFPSTime=0,frameCount=0,fpsVal=60;
 
-/* SWITCH SCREEN */
-function show(id){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+// Load Bebas Neue via FontFace API for canvas
+(async()=>{
+  try{
+    await document.fonts.load('bold 80px "Bebas Neue"');
+    await document.fonts.load('italic 28px "Playfair Display"');
+  }catch(e){}
+})();
+
+// ── EASING ─────────────────────────────────────────────────────────────────────
+const easeOut=(t)=>1-Math.pow(1-t,4);
+const easeIn=(t)=>t*t*t;
+const easeInOut=(t)=>t<.5?4*t*t*t:(t-1)*(2*t-2)*(2*t-2)+1;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const invLerp=(a,b,v)=>clamp((v-a)/(b-a),0,1);
+const remap=(v,a,b,c,d)=>lerp(c,d,invLerp(a,b,v));
+
+// ── FIRE SYSTEM ────────────────────────────────────────────────────────────────
+const FCOLS=200,FROWS=50;
+const fireArr=new Uint8Array(FCOLS*FROWS);
+const firePal=[];
+for(let i=0;i<256;i++){
+  firePal.push([
+    Math.min(255,i*2.8|0),
+    Math.max(0,Math.min(255,(i*1.6-80)|0)),
+    0,
+    Math.min(255,i*1.2|0)
+  ]);
 }
-
-/* LOGIN */
-function login(){
-    let email = document.getElementById("email").value;
-    let pass = document.getElementById("pass").value;
-
-    if(email && pass){
-        show('questions');
-    } else {
-        alert("Enter details");
+function stepFire(intensity=1){
+  for(let x=0;x<FCOLS;x++){
+    const v=Math.random()<.5?0:Math.floor(Math.random()*200*intensity+55*intensity);
+    fireArr[(FROWS-1)*FCOLS+x]=v;
+  }
+  for(let x=0;x<FCOLS;x++){
+    for(let y=1;y<FROWS;y++){
+      const s=y*FCOLS+x;
+      const rnd=Math.random()*3|0;
+      const d=(y-1)*FCOLS+((x-rnd+1+FCOLS)%FCOLS);
+      fireArr[d]=Math.max(0,fireArr[s]-(Math.random()<.25?1:0));
     }
+  }
+}
+const fireBuf=document.createElement('canvas');fireBuf.width=FCOLS;fireBuf.height=FROWS;
+const fireBufCtx=fireBuf.getContext('2d');
+function renderFire(x,y,w,h,intensity,alpha){
+  stepFire(intensity);
+  const idata=fireBufCtx.createImageData(FCOLS,FROWS);
+  const d=idata.data;
+  for(let i=0;i<FCOLS*FROWS;i++){
+    const v=fireArr[i],p=firePal[v];
+    d[i*4]=p[0];d[i*4+1]=p[1];d[i*4+2]=p[2];d[i*4+3]=p[3];
+  }
+  fireBufCtx.putImageData(idata,0,0);
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ctx.filter='blur(2px)';
+  ctx.drawImage(fireBuf,x,y+h-FROWS*(h/FROWS*1.2),w,h*1.2);
+  ctx.filter='none';
+  ctx.globalAlpha=1;
+  ctx.restore();
 }
 
-/* AI SCORING */
-function submitApp(){
-    let answers = document.querySelectorAll("textarea");
-    let score = 0;
+// ── PARTICLE SYSTEM ────────────────────────────────────────────────────────────
+class Particle{
+  constructor(){this.reset()}
+  reset(){
+    this.x=W/2+(Math.random()-.5)*400;
+    this.y=H+20;
+    this.vx=(Math.random()-.5)*.8;
+    this.vy=-(Math.random()*2.5+1.5);
+    this.life=1;this.decay=Math.random()*.008+.004;
+    this.size=Math.random()*4+1;
+    this.color=Math.random()<.6?'#ff6a00':Math.random()<.5?'#ffcc44':'#ff4500';
+  }
+  update(){this.x+=this.vx;this.y+=this.vy;this.vy+=.04;this.life-=this.decay;this.vx+=(Math.random()-.5)*.08;}
+  draw(){
+    ctx.save();ctx.globalAlpha=Math.max(0,this.life)*.8;
+    ctx.beginPath();ctx.arc(this.x,this.y,this.size*this.life,0,Math.PI*2);
+    ctx.fillStyle=this.color;ctx.shadowColor=this.color;ctx.shadowBlur=10;ctx.fill();
+    ctx.restore();
+  }
+}
+const particles=Array.from({length:80},()=>{const p=new Particle();p.y=Math.random()*H;p.life=Math.random();return p;});
 
-    answers.forEach(a=>{
-        if(a.value.length > 80) score+=20;
-        else if(a.value.length > 40) score+=10;
-        else score+=5;
+// ── TEXT HELPERS ───────────────────────────────────────────────────────────────
+function bigText(text,x,y,size,alpha,color='#ffffff',shadow=true){
+  ctx.save();
+  ctx.globalAlpha=clamp(alpha,0,1);
+  ctx.font=`${size}px "Bebas Neue", sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  if(shadow){ctx.shadowColor='rgba(255,106,0,.6)';ctx.shadowBlur=40;}
+  ctx.fillStyle=color;
+  ctx.fillText(text,x,y);
+  ctx.restore();
+}
+function subText(text,x,y,size,alpha,color='#ff6a00',spacing=8){
+  ctx.save();
+  ctx.globalAlpha=clamp(alpha,0,1);
+  ctx.font=`${size}px "Space Mono", monospace`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.letterSpacing=spacing+'px';
+  ctx.fillStyle=color;
+  ctx.fillText(text,x,y);
+  ctx.restore();
+}
+function italicText(text,x,y,size,alpha,color='rgba(255,255,255,0.6)'){
+  ctx.save();
+  ctx.globalAlpha=clamp(alpha,0,1);
+  ctx.font=`italic ${size}px "Playfair Display", serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle=color;
+  ctx.fillText(text,x,y);
+  ctx.restore();
+}
+
+// ── DRAW BURGER ────────────────────────────────────────────────────────────────
+function drawBurger(cx,cy,scale,wobble,glowAlpha){
+  const s=scale;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(Math.sin(wobble)*.04);
+  // Glow under burger
+  const grd=ctx.createRadialGradient(0,60*s,5,0,60*s,90*s);
+  grd.addColorStop(0,`rgba(255,106,0,${glowAlpha*.6})`);
+  grd.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.ellipse(0,65*s,80*s,18*s,0,0,Math.PI*2);
+  ctx.fillStyle=grd;ctx.fill();
+
+  const layers=[
+    {y:-75,w:105,h:36,r:['50%','50%','20%','20%'],c:['#a0683e','#7a4c2a'],seed:true},
+    {y:-45,w:100,h:11,r:['3px','3px','3px','3px'],c:['#33891e','#1d5c11'],ruffled:true},
+    {y:-35,w:100,h:9,r:['3px'],c:['#c9352a','#9c2319']},
+    {y:-24,w:96,h:26,r:['4px'],c:['#1c1c1c','#0e0e0e'],sear:true},
+    {y:3,w:108,h:11,r:['3px'],c:['#f0b800','#c48f00'],cheese:true},
+    {y:15,w:96,h:26,r:['4px'],c:['#1c1c1c','#0e0e0e'],sear:true},
+    {y:42,w:102,h:22,r:['20%','20%','50%','50%'],c:['#a0683e','#7a4c2a']},
+  ];
+
+  for(const l of layers){
+    const lw=l.w*s,lh=l.h*s,lx=-lw/2,ly=l.y*s;
+    ctx.save();
+    const grad=ctx.createLinearGradient(lx,ly,lx,ly+lh);
+    grad.addColorStop(0,l.c[0]);grad.addColorStop(1,l.c[1]);
+    // Rounded rect
+    const rx=parseFloat(l.r[0])>10?(lw*parseFloat(l.r[0])/100):parseFloat(l.r[0])||5;
+    ctx.beginPath();
+    if(l.r.length===1||l.r.length===3){
+      ctx.roundRect(lx,ly,lw,lh,rx);
+    } else {
+      const tl=parseFloat(l.r[0])>10?lw*parseFloat(l.r[0])/100:parseFloat(l.r[0]);
+      const tr=parseFloat(l.r[1])>10?lw*parseFloat(l.r[1])/100:parseFloat(l.r[1]);
+      const br=parseFloat(l.r[2])>10?lw*parseFloat(l.r[2])/100:parseFloat(l.r[2]);
+      const bl=parseFloat(l.r[3])>10?lw*parseFloat(l.r[3])/100:parseFloat(l.r[3]);
+      ctx.roundRect(lx,ly,lw,lh,[tl,tr,br,bl]);
+    }
+    ctx.fillStyle=grad;
+    ctx.shadowColor='rgba(0,0,0,.5)';ctx.shadowBlur=8*s;ctx.shadowOffsetY=3*s;
+    ctx.fill();
+    // Shine
+    ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    ctx.beginPath();
+    if(l.r.length===1||l.r.length===3)ctx.roundRect(lx,ly,lw,lh*0.45,rx);
+    else ctx.roundRect(lx,ly,lw,lh*0.45,[parseFloat(l.r[0])>10?lw*parseFloat(l.r[0])/100:parseFloat(l.r[0]),parseFloat(l.r[1])>10?lw*parseFloat(l.r[1])/100:parseFloat(l.r[1]),0,0]);
+    ctx.fillStyle='rgba(255,255,255,.07)';ctx.fill();
+    // Sesame seeds on bun top
+    if(l.seed){
+      ctx.fillStyle='rgba(240,220,150,.7)';
+      for(let i=0;i<10;i++){
+        const sx=lx+15*s+Math.random()*75*s,sy=ly+6*s+Math.random()*14*s;
+        ctx.beginPath();ctx.ellipse(sx,sy,3*s,1.5*s,Math.random()*Math.PI,0,Math.PI*2);ctx.fill();
+      }
+    }
+    // Cheese drip
+    if(l.cheese){
+      ctx.fillStyle='#f0b800';
+      for(let i=0;i<5;i++){
+        const dx=lx+20*s+i*18*s;
+        ctx.beginPath();ctx.moveTo(dx,ly+lh);ctx.lineTo(dx+6*s,ly+lh+8*s);ctx.lineTo(dx+12*s,ly+lh);ctx.fill();
+      }
+    }
+    // Sear marks
+    if(l.sear){
+      ctx.strokeStyle='rgba(0,0,0,.5)';ctx.lineWidth=1.5*s;
+      for(let i=0;i<3;i++){
+        ctx.beginPath();ctx.moveTo(lx+15*s+i*28*s,ly+4*s);ctx.lineTo(lx+25*s+i*28*s,ly+lh-4*s);ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+  // Sauce drips
+  ctx.save();
+  ctx.fillStyle='rgba(200,50,0,.7)';
+  for(let i=0;i<8;i++){
+    const dx=-42*s+i*12*s;
+    ctx.beginPath();ctx.arc(dx,(-20+Math.sin(i*1.3)*6)*s,3*s,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.moveTo(dx-2*s,(-18)*s);ctx.lineTo(dx+2*s,(-18)*s);
+    ctx.lineTo(dx+1.5*s,(-18+7+Math.abs(Math.sin(i))*8)*s);ctx.lineTo(dx-1.5*s,(-18+7+Math.abs(Math.sin(i))*8)*s);
+    ctx.fill();
+  }
+  ctx.restore();
+  ctx.restore();
+}
+
+// ── DRAW DONUT ─────────────────────────────────────────────────────────────────
+function drawDonut(cx,cy,radius,angle,glowColor='#ff6a00',glowAlpha=.4){
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(angle);
+  // Glow
+  const gr=ctx.createRadialGradient(0,0,radius*.3,0,0,radius*1.2);
+  gr.addColorStop(0,`${glowColor}${Math.floor(glowAlpha*255).toString(16).padStart(2,'0')}`);
+  gr.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.arc(0,0,radius*1.3,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();
+  // Body
+  const bodyGrd=ctx.createRadialGradient(-radius*.3,-radius*.3,radius*.1,0,0,radius);
+  bodyGrd.addColorStop(0,'#4a1a00');bodyGrd.addColorStop(.5,'#2a0d00');bodyGrd.addColorStop(1,'#1a0800');
+  ctx.beginPath();ctx.arc(0,0,radius,0,Math.PI*2);ctx.fillStyle=bodyGrd;
+  ctx.shadowColor=glowColor;ctx.shadowBlur=25;ctx.fill();
+  // Gold drizzle
+  ctx.shadowBlur=0;
+  for(let i=0;i<6;i++){
+    ctx.save();ctx.rotate(i*Math.PI/3);
+    ctx.beginPath();ctx.moveTo(radius*.45,0);
+    ctx.bezierCurveTo(radius*.65,-radius*.12,radius*.8,radius*.08,radius*.9,0);
+    ctx.strokeStyle=`rgba(255,200,50,.55)`;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+    ctx.restore();
+  }
+  // Shine
+  ctx.beginPath();ctx.ellipse(-radius*.25,-radius*.28,radius*.32,radius*.18,-.5,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,.09)';ctx.fill();
+  // Hole
+  ctx.beginPath();ctx.arc(0,0,radius*.42,0,Math.PI*2);
+  ctx.fillStyle='#050505';ctx.shadowColor='transparent';ctx.fill();
+  const holeG=ctx.createRadialGradient(0,0,radius*.35,0,0,radius*.45);
+  holeG.addColorStop(0,`rgba(255,100,0,.3)`);holeG.addColorStop(1,'transparent');
+  ctx.beginPath();ctx.arc(0,0,radius*.46,0,Math.PI*2);ctx.fillStyle=holeG;ctx.fill();
+  ctx.beginPath();ctx.arc(0,0,radius*.42,0,Math.PI*2);ctx.fillStyle='#050505';ctx.fill();
+  ctx.restore();
+}
+
+// ── GRID BG ────────────────────────────────────────────────────────────────────
+function drawGrid(alpha){
+  ctx.save();ctx.globalAlpha=alpha*.12;
+  ctx.strokeStyle='#ff6a00';ctx.lineWidth=.5;
+  const gs=60;
+  for(let x=0;x<W+gs;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H+gs;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  ctx.restore();
+}
+
+// ── LETTERBOX ──────────────────────────────────────────────────────────────────
+function drawLetterbox(amount){
+  ctx.save();ctx.fillStyle='#000';
+  ctx.fillRect(0,0,W,H*amount);
+  ctx.fillRect(0,H*(1-amount),W,H*amount);
+  ctx.restore();
+}
+
+// ── VIGNETTE ──────────────────────────────────────────────────────────────────
+function drawVignette(strength=.8){
+  const vg=ctx.createRadialGradient(W/2,H/2,H*.25,W/2,H/2,H*.85);
+  vg.addColorStop(0,'transparent');vg.addColorStop(1,`rgba(0,0,0,${strength})`);
+  ctx.save();ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);ctx.restore();
+}
+
+// ── GRAIN ─────────────────────────────────────────────────────────────────────
+let grainFrame=0;
+function drawGrain(strength=.03){
+  if(++grainFrame%2!==0)return;
+  ctx.save();ctx.globalAlpha=strength;
+  for(let i=0;i<1200;i++){
+    const x=Math.random()*W,y=Math.random()*H;
+    const v=Math.random()*.6;
+    ctx.fillStyle=`rgba(${Math.floor(v*255)},${Math.floor(v*255)},${Math.floor(v*255)},1)`;
+    ctx.fillRect(x,y,1,1);
+  }
+  ctx.restore();
+}
+
+// ── HORIZONTAL LINES ──────────────────────────────────────────────────────────
+function drawScanlines(alpha){
+  ctx.save();ctx.globalAlpha=alpha*.04;
+  ctx.fillStyle='#000';
+  for(let y=0;y<H;y+=3){ctx.fillRect(0,y,W,1);}
+  ctx.restore();
+}
+
+// ── LINE ACCENT ───────────────────────────────────────────────────────────────
+function drawAccentLine(x1,y1,x2,y2,alpha,color='#ff6a00',w=1){
+  ctx.save();ctx.globalAlpha=alpha;
+  ctx.strokeStyle=color;ctx.lineWidth=w;
+  ctx.shadowColor=color;ctx.shadowBlur=10;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  ctx.restore();
+}
+
+// ── SCENE DEFINITIONS ─────────────────────────────────────────────────────────
+// Timeline: 20 seconds total
+// 0-2s:   Black + logo reveal
+// 2-5s:   Fire ignition + tagline
+// 5-9s:   3D burger hero reveal
+// 9-12s:  Menu items carousel (burger, donut, coffee text)
+// 12-15s: Signature items
+// 15-18s: Location + WhatsApp CTA
+// 18-20s: Final logo hold + fade out
+
+function render(time){
+  // ─── BG ───────────────────────────────────────────────────────────────────
+  ctx.fillStyle='#080808';ctx.fillRect(0,0,W,H);
+
+  // ─── SCENE ROUTING ────────────────────────────────────────────────────────
+  if(time<2){
+    // SCENE 1: Logo Reveal
+    const t=time/2;
+    const bgAlpha=easeOut(t);
+    // Radial bg
+    const bg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H*.7);
+    bg.addColorStop(0,`rgba(18,6,0,${bgAlpha})`);bg.addColorStop(1,'rgba(8,8,8,0)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    drawGrid(bgAlpha);
+    // Logo
+    const logoAlpha=easeOut(remap(time,0.3,1.5,0,1));
+    const logoScale=lerp(.7,1,easeOut(remap(time,0.3,1.6,0,1)));
+    ctx.save();ctx.translate(W/2,H/2);ctx.scale(logoScale,logoScale);ctx.translate(-W/2,-H/2);
+    bigText('THE WORKSHOP',W/2,H/2-18,100,logoAlpha,'#ffffff');
+    subText('EATERY · LALITPUR · NEPAL',W/2,H/2+52,11,logoAlpha*easeOut(remap(time,.8,2,0,1)),'#ff6a00',10);
+    // Decorative lines
+    const lineAlpha=easeOut(remap(time,.6,1.8,0,1));
+    drawAccentLine(W/2-220,H/2+38,W/2-20,H/2+38,lineAlpha,'#ff6a00',.8);
+    drawAccentLine(W/2+20,H/2+38,W/2+220,H/2+38,lineAlpha,'#ff6a00',.8);
+    ctx.restore();
+
+  } else if(time<5){
+    // SCENE 2: Fire Ignition + Tagline
+    const t=remap(time,2,5,0,1);
+    const bg=ctx.createRadialGradient(W/2,H*.75,0,W/2,H*.75,H*.9);
+    bg.addColorStop(0,'rgba(20,8,0,1)');bg.addColorStop(1,'rgba(8,8,8,1)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    drawGrid(.6);
+    // Fire
+    const fireIntensity=easeOut(remap(time,2,3.5,0,1));
+    renderFire(0,H-140,W,140,fireIntensity,fireIntensity*.9);
+    // Extra fire glow
+    const fg=ctx.createLinearGradient(0,H-160,0,H);
+    fg.addColorStop(0,'transparent');fg.addColorStop(1,`rgba(255,80,0,${fireIntensity*.5})`);
+    ctx.fillStyle=fg;ctx.fillRect(0,H-160,W,160);
+    // Particles
+    particles.forEach(p=>{p.update();if(p.life<=0)p.reset();p.y*=1;p.draw();});
+    // CRAFTED
+    const w1alpha=easeOut(remap(time,2.1,2.7,0,1));
+    const w1y=lerp(H/2+80,H/2-10,easeOut(remap(time,2.1,2.7,0,1)));
+    bigText('CRAFTED.',W/2,w1y,110,w1alpha,'#ffffff');
+    // GRILLED
+    const w2alpha=easeOut(remap(time,2.5,3.2,0,1));
+    const w2y=lerp(H/2+80,H/2+55,easeOut(remap(time,2.5,3.2,0,1)));
+    const gradTxt=ctx.createLinearGradient(W/2-200,0,W/2+200,0);
+    gradTxt.addColorStop(0,'#ff6a00');gradTxt.addColorStop(1,'#ffcc44');
+    bigText('GRILLED.',W/2,w2y,110,w2alpha,gradTxt);
+    // PERFECTED
+    const w3alpha=easeOut(remap(time,2.9,3.7,0,1));
+    const w3y=lerp(H/2+80,H/2+120,easeOut(remap(time,2.9,3.7,0,1)));
+    bigText('PERFECTED.',W/2,w3y,110,w3alpha,'#ffffff');
+    // Sub
+    const subAlpha=easeOut(remap(time,3.5,4.5,0,1));
+    subText('PREMIUM BURGERS · ARTISAN COFFEE · CRAFT DONUTS',W/2,H/2+180,10,subAlpha,'rgba(255,255,255,.5)',8);
+
+  } else if(time<9){
+    // SCENE 3: 3D Burger Hero
+    const t=remap(time,5,9,0,1);
+    const inAlpha=easeOut(remap(time,5,6,0,1));
+    const bg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H*.9);
+    bg.addColorStop(0,'rgba(15,5,0,1)');bg.addColorStop(1,'rgba(8,8,8,1)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    drawGrid(inAlpha*.5);
+    // Fire at bottom
+    renderFire(0,H-100,W,100,.8,.6*inAlpha);
+    // Ambient glow
+    const amg=ctx.createRadialGradient(W/2,H/2,50,W/2,H/2,350);
+    amg.addColorStop(0,`rgba(255,100,0,${inAlpha*.15})`);amg.addColorStop(1,'transparent');
+    ctx.fillStyle=amg;ctx.fillRect(0,0,W,H);
+    // Particles
+    particles.forEach(p=>{p.update();if(p.life<=0)p.reset();p.draw();});
+    // Orbiting donuts
+    const donut1Angle=time*1.1;const donut2Angle=time*.8+2;
+    drawDonut(W/2+Math.cos(donut1Angle)*200,H/2+Math.sin(donut1Angle*1.3)*60,40,donut1Angle,'#ff6a00',inAlpha*.3);
+    drawDonut(W/2+Math.cos(donut2Angle+Math.PI)*170,H/2+Math.sin(donut2Angle)*70,32,donut2Angle,'#ffcc44',inAlpha*.25);
+    // Burger scale-in
+    const bScale=lerp(.3,1,easeOut(remap(time,5,6.2,0,1)))*(.98+Math.sin(time*1.2)*.02);
+    const bY=lerp(H,H/2+20,easeOut(remap(time,5,6,0,1)));
+    const bWobble=time*1.8;
+    drawBurger(W/2,bY,bScale,bWobble,inAlpha);
+    // Title
+    const txtAlpha=easeOut(remap(time,6.2,7,0,1));
+    subText('SIGNATURE ITEM Nº 001',W/2,H*.15,11,txtAlpha,'#ff6a00',8);
+    bigText('NASHVILLE SMASH',W/2,H*.82,52,txtAlpha,'#ffffff');
+    bigText('BURGER',W/2,H*.88,68,txtAlpha);
+    // Price
+    const priceAlpha=easeOut(remap(time,7,7.8,0,1));
+    subText('Rs 650  ·  820 CAL  ·  ⭐ 4.9',W/2,H*.94,10,priceAlpha,'rgba(255,180,50,.8)',6);
+    // Accent lines
+    drawAccentLine(W/2-250,H*.79,W/2-10,H*.79,txtAlpha,'#ff6a00',.6);
+    drawAccentLine(W/2+10,H*.79,W/2+250,H*.79,txtAlpha,'#ff6a00',.6);
+
+  } else if(time<12){
+   
+     // SCENE 4: Items Carousel
+    const t=remap(time,9,12,0,1);
+    ctx.fillStyle='#080808';ctx.fillRect(0,0,W,H);
+    drawGrid(.3);
+    // Fire subtle
+    renderFire(0,H-70,W,70,.5,.35);
+    const items=[
+      {emoji:'🍔',name:'NASHVILLE SMASH',cat:'BURGERS',price:'Rs 650',t:0},
+      {emoji:'🍩',name:'MIDNIGHT GLAZE',cat:'ARTISAN DONUTS',price:'Rs 220',t:.35},
+      {emoji:'☕',name:'WORKSHOP CORTADO',cat:'ARTISAN COFFEE',price:'Rs 280',t:.65},
+    ];
+    // Show items as floating cards
+    items.forEach((item,i)=>{
+      const cardT=remap(time,9+i*.9,9+i*.9+.7,0,1);
+      const cardAlpha=easeOut(cardT);
+      const cardX=W/2-200+i*200;
+      const cardY=H/2-80+Math.sin(time*.8+i*2.1)*12;
+      const cardScale=easeOut(clamp(cardT,0,1));
+      if(cardAlpha<=0)return;
+      ctx.save();ctx.translate(cardX,cardY);ctx.scale(cardScale,cardScale);
+      // Card BG
+      ctx.globalAlpha=cardAlpha*.9;
+      ctx.beginPath();ctx.roundRect(-80,-100,160,200,12);
+      ctx.fillStyle='rgba(20,8,0,.9)';ctx.fill();
+      ctx.strokeStyle=`rgba(255,106,0,${.25+Math.sin(time*2+i)*.1})`;ctx.lineWidth=1;ctx.stroke();
+      // Top line
+      const topg=ctx.createLinearGradient(-80,0,80,0);
+      topg.addColorStop(0,'transparent');topg.addColorStop(.5,'#ff6a00');topg.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.moveTo(-80,-100);ctx.lineTo(80,-100);ctx.strokeStyle=topg;ctx.lineWidth=1.5;ctx.stroke();
+      ctx.globalAlpha=cardAlpha;
+      // Emoji
+      ctx.font='52px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(item.emoji,0,-35);
+      // Name
+      ctx.font='bold 16px "Bebas Neue",sans-serif';ctx.letterSpacing='2px';ctx.fillStyle='#fff';ctx.fillText(item.name,0,28);
+      ctx.font='10px monospace';ctx.letterSpacing='3px';ctx.fillStyle='#ff6a00';ctx.fillText(item.cat,0,52);
+      ctx.font='bold 20px "Bebas Neue",sans-serif';ctx.letterSpacing='1px';ctx.fillStyle='#ffcc44';ctx.fillText(item.price,0,78);
+      ctx.restore();
     });
+    // Header
+    const ha=easeOut(remap(time,9,9.4,0,1));
+    subText('THE WORKSHOP MENU',W/2,60,12,ha,'#ff6a00',10);
+    bigText('WHAT WE CRAFT',W/2,100,60,ha,'#ffffff');
 
-    let text = score > 90 ? "🔥 You are selected!" :
-               score > 60 ? "⚡ Under review" :
-               "❌ Not selected";
+  } else if(time<15){
+    // SCENE 5: Showcase animation
+    const t=remap(time,12,15,0,1);
+    const bg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H*.9);
+    bg.addColorStop(0,'rgba(12,4,0,1)');bg.addColorStop(1,'rgba(8,8,8,1)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    drawGrid(.25);
+    renderFire(0,H-80,W,80,.6,.5);
+    particles.forEach(p=>{p.update();if(p.life<=0)p.reset();p.draw();});
+    // Donut hero
+    const dA=easeOut(remap(time,12,12.8,0,1));
+    const dY=lerp(H+80,H*.42,easeOut(remap(time,12,12.8,0,1)));
+    drawDonut(W/2,dY,80,time*1.3,'#ee0979',dA*.7);
+    // Glow
+    const dg=ctx.createRadialGradient(W/2,dY,20,W/2,dY,180);
+    dg.addColorStop(0,`rgba(238,9,121,${dA*.18})`);dg.addColorStop(1,'transparent');
+    ctx.fillStyle=dg;ctx.fillRect(0,0,W,H);
+    // Text
+    const ta=easeOut(remap(time,12.8,13.5,0,1));
+    subText('ARTISAN DONUTS · HANDCRAFTED DAILY',W/2,H*.12,11,ta,'#ee0979',8);
+    bigText('MIDNIGHT',W/2,H*.67,80,ta,'#ffffff');
+    bigText('GLAZE DONUT',W/2,H*.76,80,ta);
+    const gradTxt2=ctx.createLinearGradient(W/2-200,0,W/2+200,0);
+    gradTxt2.addColorStop(0,'#ff6a00');gradTxt2.addColorStop(1,'#ffcc44');
+    bigText('GLAZE DONUT',W/2,H*.76,80,ta,gradTxt2);
+    const pa=easeOut(remap(time,13.5,14.2,0,1));
+    subText('Rs 220  ·  LIMITED 40 DAILY  ·  ⭐ 4.8',W/2,H*.85,10,pa,'rgba(255,200,50,.8)',6);
+    drawAccentLine(W/2-230,H*.63,W/2-12,H*.63,ta,'#ee0979',.6);
+    drawAccentLine(W/2+12,H*.63,W/2+230,H*.63,ta,'#ee0979',.6);
 
-    document.getElementById("result").innerText = text;
+  } else if(time<18){
+    // SCENE 6: Location + CTA
+    const t=remap(time,15,18,0,1);
+    ctx.fillStyle='#070707';ctx.fillRect(0,0,W,H);
+    drawGrid(.2);
+    renderFire(0,H-60,W,60,.4,.4);
+    const la=easeOut(remap(time,15,15.8,0,1));
+    subText('FIND US',W/2,H*.18,13,la,'#ff6a00',10);
+    bigText('TWO LOCATIONS',W/2,H*.26,68,la,'#ffffff');
+    // Cards
+    const c1a=easeOut(remap(time,15.5,16.2,0,1));
+    const c2a=easeOut(remap(time,16,16.8,0,1));
+    [[W/2-220,c1a,'LALITPUR','Patan Dhoka Road'],[W/2+220,c2a,'BOUDHA','Boudha Stupa Road']].forEach(([cx,ca,loc,addr])=>{
+      if(ca<=0)return;
+      ctx.save();ctx.globalAlpha=ca;
+      ctx.beginPath();ctx.roundRect(cx-140,H*.38,280,155,10);
+      ctx.fillStyle='rgba(18,7,0,.85)';ctx.fill();
+      ctx.strokeStyle='rgba(255,106,0,.2)';ctx.lineWidth=1;ctx.stroke();
+      ctx.font='bold 28px "Bebas Neue",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.letterSpacing='3px';ctx.fillStyle='#fff';ctx.fillText(loc,cx,H*.42+25);
+      ctx.font='11px monospace';ctx.letterSpacing='1px';ctx.fillStyle='#666';ctx.fillText(addr,cx,H*.42+55);
+      ctx.font='11px monospace';ctx.letterSpacing='1px';ctx.fillStyle='#ff6a00';ctx.fillText('+977 9804650880',cx,H*.42+80);
+      ctx.restore();
+    });
+    // WhatsApp CTA
+    const waa=easeOut(remap(time,16.8,17.5,0,1));
+    const btnY=H*.76;
+    ctx.save();ctx.globalAlpha=waa;
+    const btnG=ctx.createLinearGradient(W/2-140,0,W/2+140,0);
+    btnG.addColorStop(0,'#ff6a00');btnG.addColorStop(1,'#ee0979');
+    ctx.beginPath();ctx.roundRect(W/2-150,btnY-22,300,44,4);ctx.fillStyle=btnG;ctx.fill();
+    ctx.font='bold 14px "Bebas Neue",sans-serif';ctx.letterSpacing='4px';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText('ORDER ON WHATSAPP →',W/2,btnY);
+    ctx.font='10px monospace';ctx.letterSpacing='3px';ctx.fillStyle='rgba(255,255,255,.45)';ctx.fillText('+977 9804650880',W/2,btnY+32);
+    ctx.restore();
 
-    show('resultPage');
+  } else {
+    // SCENE 7: Final Logo Hold + Fade
+    const t=remap(time,18,20,0,1);
+    const bg=ctx.createRadialGradient(W/2,H*.6,0,W/2,H*.6,H*.8);
+    bg.addColorStop(0,'rgba(15,5,0,1)');bg.addColorStop(1,'rgba(8,8,8,1)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    drawGrid(.15);
+    renderFire(0,H-120,W,120,.7,.6*(1-easeIn(remap(time,19,20,0,1))));
+    particles.forEach(p=>{p.update();if(p.life<=0)p.reset();p.draw();});
+    const fadeIn=easeOut(remap(time,18,18.8,0,1));
+    const fadeOut=easeIn(remap(time,19.2,20,0,1));
+    const alpha=fadeIn*(1-fadeOut);
+    // Big final logo
+    bigText('THE WORKSHOP',W/2,H/2-30,96,alpha,'#ffffff');
+    subText('EATERY',W/2,H/2+32,22,alpha,'#ff6a00',16);
+    // Tagline
+    italicText('"Crafted. Grilled. Perfected."',W/2,H/2+85,22,alpha*easeOut(remap(time,18.4,19,0,1)));
+    // Lines
+    const la=alpha*easeOut(remap(time,18.2,19,0,1));
+    drawAccentLine(W/2-280,H/2+10,W/2-10,H/2+10,la,'#ff6a00',.7);
+    drawAccentLine(W/2+10,H/2+10,W/2+280,H/2+10,la,'#ff6a00',.7);
+  }
+
+  // ─── GLOBAL EFFECTS (always) ──────────────────────────────────────────────
+  drawVignette(.75);
+  drawLetterbox(.05);
+  drawScanlines(1);
+  drawGrain(.025);
+
+  // Cinematic bars - small fade in/out
+  const cbFade=Math.min(easeOut(time/.4),1-(time>19.6?easeIn(remap(time,19.6,20,0,1)):0));
+  if(cbFade>0){
+    ctx.save();ctx.globalAlpha=cbFade*.8;ctx.fillStyle='#000';
+    ctx.fillRect(0,0,W,H*.055);ctx.fillRect(0,H*.945,W,H*.055);
+    ctx.restore();
+  }
+  // Flash on scene transitions
+  const flashTimes=[2,5,9,12,15,18];
+  let flashAlpha=0;
+  for(const ft of flashTimes){
+    const d=Math.abs(time-ft);
+    if(d<.15)flashAlpha=Math.max(flashAlpha,easeOut(1-d/.15)*.35);
+  }
+  if(flashAlpha>0){
+    ctx.save();ctx.globalAlpha=flashAlpha;
+    ctx.fillStyle='rgba(255,120,0,1)';ctx.fillRect(0,0,W,H);
+    ctx.restore();
+  }
 }
 
+// ── ANIMATION LOOP ─────────────────────────────────────────────────────────────
+let animId;
+function loop(timestamp){
+  if(!startTime)startTime=timestamp-pausedAt*1000;
+  if(!paused){
+    elapsed=Math.min((timestamp-startTime)/1000,TOTAL);
+    render(elapsed);
+    // FPS
+    frameCount++;
+    if(timestamp-lastFPSTime>500){
+      fpsVal=Math.round(frameCount*1000/(timestamp-lastFPSTime));
+      document.getElementById('fps-counter').textContent=fpsVal+' FPS';
+      frameCount=0;lastFPSTime=timestamp;
+    }
+    // Progress
+    const pct=(elapsed/TOTAL)*100;
+    document.getElementById('progressBar').style.width=pct+'%';
+    const sec=Math.floor(elapsed);
+    document.getElementById('timeLbl').textContent=`0:${String(sec).padStart(2,'0')} / 0:20`;
+    if(elapsed>=TOTAL){
+      document.getElementById('replay-overlay').classList.add('show');
+      cancelAnimationFrame(animId);return;
+    }
+  }
+  animId=requestAnimationFrame(loop);
+}
+animId=requestAnimationFrame(loop);
+}
 </script>
-
 </body>
-</html>
-
-
-
+</html> 
+                                  
+    
+        
+        
+      
+      
+      
+      
     
